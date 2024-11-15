@@ -19,5 +19,32 @@ namespace QualityApi.Cases{
             var newCase = await _caseService.CreateCaseAsync(data);
             return StatusCode(201, newCase);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCases(){
+            var cases = await _caseService.FindAllAsync();
+            return Ok(cases);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCaseById([FromRoute] long id){
+            var foundCase = await _caseService.FindByIdAsync(id);
+            if (foundCase == null){
+                return NotFound($"Could not find case with id {id}");
+            }
+            return Ok(foundCase);
+        }
+
+        // [HttpPatch("{id}")]
+        // public async Task<IActionResult> UpdateCase([FromRoute] long id, [FromBody] UpdateCaseDto data){
+        //     if (!ModelState.IsValid){
+        //         return BadRequest(ModelState);
+        //     }
+        //     var updatedCase = await _caseService.UpdateCase(id, data);
+        //     if (updatedCase == null){
+        //         return NotFound("Case not found");
+        //     }
+        //     return Ok(updatedCase);
+        // }
     }
 }

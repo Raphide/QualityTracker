@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using ProductEntity = QualityApi.Product.Entities.Product;
+using LocationEntity = QualityApi.Locations.Entities.Location;
 
 namespace QualityApi.Cases.Entities
 {
@@ -12,11 +13,11 @@ namespace QualityApi.Cases.Entities
         [Key]
         public long Id { get; set; }
         [Required]
-        public required string CaseNumber {get; set;}
+        public required string CaseNumber { get; set; }
         [Required]
         public required long ProductId { get; set; }
+
         [Required]
-        [JsonIgnore]
         public required ProductEntity Product { get; set; }
         [Required]
         [MaxLength(200)]
@@ -28,7 +29,9 @@ namespace QualityApi.Cases.Entities
         public DateOnly? EndDate { get; set; }
         [Required]
         public required int Quantity { get; set; }
-
+        [Required]
+        public required LocationEntity Location { get; set; }
+        public long LocationId { get; set; }
         [Required]
         public required bool IsActive { get; set; }
 
