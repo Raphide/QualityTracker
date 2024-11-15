@@ -16,8 +16,9 @@ namespace QualityApi.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Seed Locations
+            // Seeders
             LocationSeeder.SeedLocations(modelBuilder);
+            ProductSeeder.SeedProducts(modelBuilder);
 
             // Product and Case relationship
             modelBuilder.Entity<ProductEntity>()

@@ -30,8 +30,10 @@ namespace QualityApi.Cases.Entities
         [Required]
         public required int Quantity { get; set; }
         [Required]
-        public required LocationEntity Location { get; set; }
         public long LocationId { get; set; }
+
+        [Required]
+        public required LocationEntity Location { get; set; }
         [Required]
         public required bool IsActive { get; set; }
 

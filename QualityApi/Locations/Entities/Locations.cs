@@ -32,6 +32,7 @@ namespace QualityApi.Locations.Entities
 
         [JsonIgnore]
         public CaseEntity? Case { get; set; }
+
         public long? CaseId { get; set; }
         public void FormatLocation()
         {
