@@ -16,11 +16,15 @@ namespace QualityApi.Cases{
         }
 
         public async Task<IEnumerable<CaseEntity>> GetAllAsync(){
-            return await _context.Cases.ToListAsync();
+           return await _context.Cases
+            .Include(c => c.Location)
+            .ToListAsync();
         }
 
         public async Task<CaseEntity> GetByIdAsync(long id){
-            return await _context.Cases.FindAsync(id);
+            return await _context.Cases
+            .Include(c => c.Location)
+            .FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }

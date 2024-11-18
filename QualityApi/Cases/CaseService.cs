@@ -1,4 +1,5 @@
 using QualityApi.Cases.DTOs;
+using QualityApi.Data;
 using QualityApi.Locations;
 using QualityApi.Locations.Entities;
 using QualityApi.Product;
@@ -8,17 +9,25 @@ using ProductEntity = QualityApi.Product.Entities.Product;
 namespace QualityApi.Cases
 {
     public class CaseService
+{
+    private readonly ICaseRepository _repo;
+    private readonly IProductRepository _productRepo;
+    private readonly ILocationRepository _locationRepo;
+    private readonly ApplicationDbContext _context; // Add this
+
+    public CaseService(ICaseRepository repository, IProductRepository productRepository, ILocationRepository locationRepository, ApplicationDbContext context)
     {
-        private readonly ICaseRepository _repo;
-        private readonly IProductRepository _productRepo;
-        private readonly ILocationRepository _locationRepo;
-        public CaseService(ICaseRepository repository, IProductRepository productRepository, ILocationRepository locationRepository)
-        {
-            _repo = repository;
-            _productRepo = productRepository;
-            _locationRepo = locationRepository;
-        }
-        public async Task<CaseEntity> CreateCaseAsync(CreateCaseDto data)
+        _repo = repository;
+        _productRepo = productRepository;
+        _locationRepo = locationRepository;
+        _context = context; // Add this
+    }
+
+    public async Task<CaseEntity> CreateCaseAsync(CreateCaseDto data)
+    {
+        using var transaction = await _context.Database.BeginTransactionAsync();
+
+        try
         {
             var product = await _productRepo.GetProductByIdAsync(data.ProductId);
             if (product == null)
@@ -53,12 +62,25 @@ namespace QualityApi.Cases
                 RecoveredCost = 0
             };
 
+            var addedCase = await _repo.AddCaseAsync(cases);
+
             location.IsOccupied = true;
-            location.CaseId = cases.Id;
+            location.CaseId = addedCase.Id;
+            location.Case = addedCase;
 
             await _locationRepo.UpdateLocationAsync(location);
-            return await _repo.AddCaseAsync(cases);
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return await _repo.GetByIdAsync(addedCase.Id);
         }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
 
         internal async Task<IEnumerable<CaseEntity>> FindAllAsync()
         {
