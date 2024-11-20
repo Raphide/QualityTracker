@@ -14,8 +14,8 @@ namespace QualityApi.Cases.Entities
         public long Id { get; set; }
         [Required]
         public required string CaseNumber { get; set; }
-        [Required]
-        public required long ProductId { get; set; }
+        [JsonIgnore]
+        public long ProductId { get; set; }
 
         [Required]
         public required ProductEntity Product { get; set; }
@@ -29,7 +29,7 @@ namespace QualityApi.Cases.Entities
         public DateOnly? EndDate { get; set; }
         [Required]
         public required int Quantity { get; set; }
-        [Required]
+        [JsonIgnore]
         public long LocationId { get; set; }
 
         [Required]

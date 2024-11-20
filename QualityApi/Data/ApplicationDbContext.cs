@@ -32,6 +32,10 @@ namespace QualityApi.Data
         .WithOne(l => l.Case)
         .HasForeignKey<CaseEntity>(c => c.LocationId)
         .OnDelete(DeleteBehavior.Restrict); // leave this for now and test to see what happens when updating cases/locations
+        //  modelBuilder.Entity<CaseEntity>()
+        //         .HasOne(c => c.Product)
+        //         .WithMany(p => p.Cases)
+        //         .HasForeignKey(c => c.ProductId);
 
             modelBuilder.Entity<CaseEntity>()
                 .Property(e => e.RecoveredCost)

@@ -17,7 +17,7 @@ namespace QualityApi.Cases{
 
         public async Task<IEnumerable<CaseEntity>> GetAllAsync(){
            return await _context.Cases
-            .Include(c => c.Location)
+            .Include(c => c.Location).Include(c => c.Product)
             .ToListAsync();
         }
 

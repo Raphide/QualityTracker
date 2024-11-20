@@ -12,5 +12,6 @@ namespace QualityApi.Locations{
         {
             return await _repo.GetAllLocationsAsync();
         }
+        
     }
 }

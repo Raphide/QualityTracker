@@ -19,5 +19,10 @@ namespace QualityApi.Product{
             };
             return await _repo.AddProductAsync(product);
         }
+
+        internal async Task<IEnumerable<ProductEntity>> FindAllAsync()
+        {
+            return await _repo.GetAllAsync();
+        }
     }
 }

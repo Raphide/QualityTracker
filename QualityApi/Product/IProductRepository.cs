@@ -4,5 +4,6 @@ namespace QualityApi.Product{
     public interface IProductRepository{
         Task<ProductEntity> AddProductAsync(ProductEntity product);
         Task<ProductEntity> GetProductByIdAsync(long productId);
+        Task<IEnumerable<ProductEntity>> GetAllAsync();
     }
 }

@@ -18,5 +18,11 @@ namespace QualityApi.Product{
             var newProduct = await _productService.CreateProductAsync(data);
             return StatusCode(201, newProduct);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllProducts(){
+            var products = await _productService.FindAllAsync();
+            return Ok(products);
+        }
     }
 }

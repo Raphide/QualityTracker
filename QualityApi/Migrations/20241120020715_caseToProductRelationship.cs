@@ -5,7 +5,7 @@
 namespace QualityApi.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateCaseLocationRelationship : Migration
+    public partial class caseToProductRelationship : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

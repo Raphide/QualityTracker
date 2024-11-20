@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -14,70 +14,58 @@ namespace QualityApi.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase()
-                .Annotation("MySql:CharSet", "utf8mb4");
-
             migrationBuilder.CreateTable(
                 name: "locations",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Shelf = table.Column<int>(type: "int", nullable: false),
-                    Level = table.Column<int>(type: "int", nullable: false),
-                    Aisle = table.Column<int>(type: "int", nullable: false),
-                    FullLocation = table.Column<string>(type: "varchar(8)", maxLength: 8, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsOccupied = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Shelf = table.Column<int>(type: "integer", nullable: false),
+                    Level = table.Column<int>(type: "integer", nullable: false),
+                    Aisle = table.Column<int>(type: "integer", nullable: false),
+                    FullLocation = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
+                    IsOccupied = table.Column<bool>(type: "boolean", nullable: false),
                     CaseId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_locations", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "products",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    SKU = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Department = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    CostPrice = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
-                    RetailPrice = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
-                    UnitWeight = table.Column<decimal>(type: "decimal(8,3)", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    SKU = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Department = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    CostPrice = table.Column<decimal>(type: "numeric(8,2)", nullable: false),
+                    RetailPrice = table.Column<decimal>(type: "numeric(8,2)", nullable: false),
+                    UnitWeight = table.Column<decimal>(type: "numeric(8,3)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_products", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "cases",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CaseNumber = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CaseNumber = table.Column<string>(type: "text", nullable: false),
                     ProductId = table.Column<long>(type: "bigint", nullable: false),
-                    Description = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     StartDate = table.Column<DateOnly>(type: "date", nullable: false),
                     EndDate = table.Column<DateOnly>(type: "date", nullable: true),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
                     LocationId = table.Column<long>(type: "bigint", nullable: false),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    Outcome = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    RecoveredCost = table.Column<decimal>(type: "decimal(8,2)", nullable: true)
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    Outcome = table.Column<string>(type: "text", nullable: true),
+                    RecoveredCost = table.Column<decimal>(type: "numeric(8,2)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -94,8 +82,7 @@ namespace QualityApi.Migrations
                         principalTable: "products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.InsertData(
                 table: "locations",
@@ -302,6 +289,23 @@ namespace QualityApi.Migrations
                     { 198L, 5, null, "10-02-05", false, 2, 10 },
                     { 199L, 5, null, "10-03-05", false, 3, 10 },
                     { 200L, 5, null, "10-04-05", false, 4, 10 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "products",
+                columns: new[] { "Id", "CostPrice", "Department", "Name", "RetailPrice", "SKU", "UnitWeight" },
+                values: new object[,]
+                {
+                    { 1L, 800.00m, "Electronics", "Laptop", 1200.00m, "TECH001", 2.5m },
+                    { 2L, 400.00m, "Electronics", "Smartphone", 699.99m, "TECH002", 0.2m },
+                    { 3L, 50.00m, "Home Appliances", "Coffee Maker", 89.99m, "HOME001", 3.0m },
+                    { 4L, 40.00m, "Sports", "Running Shoes", 79.99m, "SPORT001", 0.3m },
+                    { 5L, 300.00m, "Electronics", "LED TV", 499.99m, "TECH003", 15.0m },
+                    { 6L, 30.00m, "Home Appliances", "Blender", 59.99m, "HOME002", 2.0m },
+                    { 7L, 15.00m, "Sports", "Yoga Mat", 29.99m, "SPORT002", 0.5m },
+                    { 8L, 50.00m, "Electronics", "Wireless Earbuds", 99.99m, "TECH004", 0.05m },
+                    { 9L, 40.00m, "Home Appliances", "Toaster Oven", 69.99m, "HOME003", 4.0m },
+                    { 10L, 60.00m, "Sports", "Dumbbell Set", 119.99m, "SPORT003", 10.0m }
                 });
 
             migrationBuilder.CreateIndex(
