@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@tanstack/react-query": "^5.61.0",
+    "axios": "^1.7.7"
+  },
+  "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.60.1"
+  }
+}
