@@ -48,7 +48,7 @@ namespace QualityApi.Cases
 
             var cases = new CaseEntity
             {
-                CaseNumber = data.CaseNumber,
+                // CaseNumber = data.CaseNumber,
                 ProductId = data.ProductId,
                 Product = product,
                 Description = data.Description,

@@ -4,9 +4,9 @@ namespace QualityApi.Cases.DTOs
 {
     public class CreateCaseDto
     {
-        [Required(ErrorMessage = "Case Number is required")]
-        [RegularExpression(@"^\d+$", ErrorMessage = "Case Number must contain only digits")]
-        public required string CaseNumber { get; set; }
+        // [Required(ErrorMessage = "Case Number is required")]
+        // [RegularExpression(@"^\d+$", ErrorMessage = "Case Number must contain only digits")]
+        // public required string CaseNumber { get; set; }
         [Required(ErrorMessage = "Product ID is required")]
         public required long ProductId { get; set; }
         [Required(ErrorMessage = "Case must have a description")]

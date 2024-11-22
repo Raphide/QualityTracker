@@ -12,8 +12,8 @@ namespace QualityApi.Cases.Entities
     {
         [Key]
         public long Id { get; set; }
-        [Required]
-        public required string CaseNumber { get; set; }
+        // [Required]
+        // public required string CaseNumber { get; set; }
         [JsonIgnore]
         public long ProductId { get; set; }
 
