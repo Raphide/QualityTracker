@@ -4,17 +4,11 @@ namespace QualityApi.Cases.DTOs
 {
     public class CreateCaseDto
     {
-        // [Required(ErrorMessage = "Case Number is required")]
-        // [RegularExpression(@"^\d+$", ErrorMessage = "Case Number must contain only digits")]
-        // public required string CaseNumber { get; set; }
         [Required(ErrorMessage = "Product ID is required")]
         public required long ProductId { get; set; }
         [Required(ErrorMessage = "Case must have a description")]
         [MaxLength(200, ErrorMessage = "Description must not be any larger that 200 words")]
         public required string Description { get; set; }
-
-        [Required(ErrorMessage = "Start date is required")]
-        public required DateOnly StartDate { get; set; }
 
         // public DateOnly? EndDate { get; set; }
 

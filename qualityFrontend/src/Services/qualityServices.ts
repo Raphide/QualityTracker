@@ -35,9 +35,17 @@ export interface Location {
 }
 
 export const getAllCases = async () => {
-    const response = await axios.get<CaseResponse[]>(baseURL + "/cases");
-    if(response.status !== 200){
-        throw new Error("failed to fetch cases");
-    }
-    return response.data;
-}
+  const response = await axios.get<CaseResponse[]>(baseURL + "/cases");
+  if (response.status !== 200) {
+    throw new Error("failed to fetch cases");
+  }
+  return response.data;
+};
+
+export const getAllProducts = async () => {
+  const response = await axios.get<Product[]>(baseURL + "/products");
+  if (response.status !== 200) {
+    throw new Error("failed to fetch products");
+  }
+  return response.data;
+};

@@ -13,6 +13,7 @@ const LandingPage = () => {
     console.log(error.message);
   }
 
+
   return (
     <div>
       <div className={styles.top}>
@@ -35,6 +36,7 @@ const LandingPage = () => {
           <ul key={cases.id}>{cases.description}</ul>
         ))}
       </li>
+    
     </div>
   );
 };

@@ -9,78 +9,79 @@ using ProductEntity = QualityApi.Product.Entities.Product;
 namespace QualityApi.Cases
 {
     public class CaseService
-{
-    private readonly ICaseRepository _repo;
-    private readonly IProductRepository _productRepo;
-    private readonly ILocationRepository _locationRepo;
-    private readonly ApplicationDbContext _context; // Add this
-
-    public CaseService(ICaseRepository repository, IProductRepository productRepository, ILocationRepository locationRepository, ApplicationDbContext context)
     {
-        _repo = repository;
-        _productRepo = productRepository;
-        _locationRepo = locationRepository;
-        _context = context; // Add this
-    }
+        private readonly ICaseRepository _repo;
+        private readonly IProductRepository _productRepo;
+        private readonly ILocationRepository _locationRepo;
+        private readonly ApplicationDbContext _context; 
 
-    public async Task<CaseEntity> CreateCaseAsync(CreateCaseDto data)
-    {
-        using var transaction = await _context.Database.BeginTransactionAsync();
-
-        try
+        public CaseService(ICaseRepository repository, IProductRepository productRepository, ILocationRepository locationRepository, ApplicationDbContext context)
         {
-            var product = await _productRepo.GetProductByIdAsync(data.ProductId);
-            if (product == null)
-            {
-                throw new Exception($"Product with ID {data.ProductId} not found.");
-            }
-
-            var location = await _locationRepo.GetLocationByIdAsync(data.LocationId);
-            if (location == null)
-            {
-                throw new Exception($"Location with ID {data.LocationId} not found.");
-            }
-
-            if (location.IsOccupied)
-            {
-                throw new Exception($"Location with ID {data.LocationId} is already occupied.");
-            }
-
-            var cases = new CaseEntity
-            {
-                // CaseNumber = data.CaseNumber,
-                ProductId = data.ProductId,
-                Product = product,
-                Description = data.Description,
-                StartDate = data.StartDate,
-                Quantity = data.Quantity,
-                LocationId = data.LocationId,
-                Location = location,
-                EndDate = null,
-                IsActive = true,
-                Outcome = "pending",
-                RecoveredCost = 0
-            };
-
-            var addedCase = await _repo.AddCaseAsync(cases);
-
-            location.IsOccupied = true;
-            location.CaseId = addedCase.Id;
-            location.Case = addedCase;
-
-            await _locationRepo.UpdateLocationAsync(location);
-
-            await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-
-            return await _repo.GetByIdAsync(addedCase.Id);
+            _repo = repository;
+            _productRepo = productRepository;
+            _locationRepo = locationRepository;
+            _context = context; 
         }
-        catch
+
+        public async Task<CaseEntity> CreateCaseAsync(CreateCaseDto data)
         {
-            await transaction.RollbackAsync();
-            throw;
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var product = await _productRepo.GetProductByIdAsync(data.ProductId);
+                if (product == null)
+                {
+                    throw new Exception($"Product with ID {data.ProductId} not found.");
+                }
+
+                var location = await _locationRepo.GetLocationByIdAsync(data.LocationId);
+                if (location == null)
+                {
+                    throw new Exception($"Location with ID {data.LocationId} not found.");
+                }
+
+                if (location.IsOccupied)
+                {
+                    throw new Exception($"Location with ID {data.LocationId} is already occupied.");
+                }
+
+                DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
+
+                var cases = new CaseEntity
+                {
+                    ProductId = data.ProductId,
+                    Product = product,
+                    Description = data.Description,
+                    StartDate = currentDate,
+                    Quantity = data.Quantity,
+                    LocationId = data.LocationId,
+                    Location = location,
+                    EndDate = null,
+                    IsActive = true,
+                    Outcome = "pending",
+                    RecoveredCost = 0
+                };
+
+                var addedCase = await _repo.AddCaseAsync(cases);
+
+                location.IsOccupied = true;
+                location.CaseId = addedCase.Id;
+                location.Case = addedCase;
+
+                await _locationRepo.UpdateLocationAsync(location);
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return await _repo.GetByIdAsync(addedCase.Id);
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
-    }
 
         internal async Task<IEnumerable<CaseEntity>> FindAllAsync()
         {
@@ -92,14 +93,28 @@ namespace QualityApi.Cases
             return await _repo.GetByIdAsync(id);
         }
 
-        // internal async Task<CaseEntity> UpdateCase(long id, UpdateCaseDto data)
-        // {
-        //     var existingCase = await _repo.GetByIdAsync(id);
-        //     if (existingCase == null){
-        //         throw new Exception("Case not found");
-        //     }
+        internal async Task<bool> DeleteCaseAsync(long id)
+        {
+            var existingCase = await _repo.GetByIdAsync(id);
+            if (existingCase == null)
+            {
+                return false;
+            }
+            await _repo.DeleteCase(id);
+            return true;
+        }
 
-        //     existingCase.Description = data.Description;
-        // }
+        internal async Task<CaseEntity> UpdateCase(long id, UpdateCaseDto data)
+        {
+            var existingCase = await _repo.GetByIdAsync(id);
+            if (existingCase == null)
+            {
+                throw new Exception("Case not found");
+            }
+
+            existingCase.Description = data.Description;
+            existingCase.Quantity = data.Quantity;
+            return await _repo.UpdateCaseAsync(existingCase);
+        }
     }
 }

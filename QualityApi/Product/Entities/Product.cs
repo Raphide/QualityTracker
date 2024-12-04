@@ -25,7 +25,7 @@ namespace QualityApi.Product.Entities
         public required decimal RetailPrice { get; set; }
         [Required]
         public required decimal UnitWeight { get; set; }
-        [JsonIgnore]
+        [JsonIgnore] //causing object cycle when GETting. Need to fix.
         public ICollection<CaseEntity>? Cases { get; set; }
 
     }
